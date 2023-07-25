@@ -31,7 +31,8 @@ int hash(STRING vertex);
 void displayDictionary(Dictionary *dict);
 void visualizeDictionary(Dictionary *dict);
 bool addEdge(Dictionary *dict, STRING vertex, STRING edge);
-bool deleteEdge(Dictionary *dict, STRING vertex, STRING edge)
+bool deleteEdge(Dictionary *dict, STRING vertex, STRING edge);
+bool deleteVertex(Dictionary *dict, STRING vertex);
 
 
 #endif
