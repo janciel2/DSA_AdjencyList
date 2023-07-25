@@ -278,9 +278,331 @@ bool deleteVertex(Dictionary *dict, STRING vertex)
 		return true;
 		}
 		
-		
-		
-		
 	
 	return false;
+}
+
+
+void push(StackList *stack, int *top, int val)
+{
+    (*top)++;
+    stack[*top] = val;
+}
+
+int pop(StackList *stack, int *top)
+{
+    int val = stack[*top];
+    (*top)--;
+    return val;
+}
+
+void DFS(Dictionary *dict)
+{
+    // Create a stack to keep track of the vertices to be explored
+    StackList stack[MAXSIZE];
+    int top = -1; // Initialize the stack top to -1 (empty stack)
+
+    // Initialize an array to keep track of visited vertices
+    bool visited[MAXSIZE];
+    for (int i = 0; i < MAXSIZE; i++)
+    {
+        visited[i] = false;
+    }
+
+    // Find the starting vertex (startVal) to begin DFS
+    STRING startVal;
+    strcpy(startVal, EMPTYSTRING);
+
+    for (int i = 0; i < MAXSIZE - 1; i++)
+    {
+        if (strcmp(dict[i].vertex, EMPTYSTRING) != 0)
+        {
+            if (strcmp(dict[i + 1].vertex, EMPTYSTRING) != 0)
+            {
+                int smallVal = compareValues(dict[i].vertex, dict[i + 1].vertex);
+                if (smallVal == 0)
+                {
+                    if (strcmp(startVal, EMPTYSTRING) != 0)
+                    {
+                        int smallVal = compareValues(dict[i].vertex, startVal);
+                        if (smallVal == 0)
+                        {
+                            strcpy(startVal, dict[i].vertex);
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        strcpy(startVal, dict[i].vertex);
+                    }
+                }
+                else
+                {
+                    if (strcmp(startVal, EMPTYSTRING) != 0)
+                    {
+                        int smallVal = compareValues(dict[i + 1].vertex, startVal);
+                        if (smallVal == 0)
+                        {
+                            strcpy(startVal, dict[i + 1].vertex);
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        strcpy(startVal, dict[i + 1].vertex);
+                    }
+                }
+            }
+            else
+            {
+                strcpy(startVal, dict[i].vertex);
+            }
+        }
+    }
+
+    // Find the index of the starting vertex
+    int startValIndex = -1;
+    for (int i = 0; i < MAXSIZE; i++)
+    {
+        if (strcmp(dict[i].vertex, startVal) == 0)
+        {
+            startValIndex = i;
+            break;
+        }
+    }
+
+    // If the starting vertex is not found, return (error)
+    if (startValIndex == -1)
+    {
+        printf("Starting vertex not found: %s\n", startVal);
+        return;
+    }
+
+    // Push the index of the starting vertex onto the stack
+    push(stack, &top, startValIndex);
+
+    // Mark the starting vertex as visited
+    visited[startValIndex] = true;
+
+    printf("DFS traversal starting from vertex %s: ", startVal);
+
+    // Start DFS traversal
+    while (top >= 0)
+    {
+        // Pop a vertex from the stack
+        int currentVertexIndex = pop(stack, &top);
+
+        // Process the current vertex (e.g., print its value)
+        printf("%s ", dict[currentVertexIndex].vertex);
+
+        // Explore all adjacent vertices of the current vertex
+        for (int i = 0; i < MAX; i++)
+        {
+            if (strcmp(dict[currentVertexIndex].arrayList.edge[i], EMPTYSTRING) != 0)
+            {
+                // Find the index of the adjacent vertex in the dictionary
+                int adjacentVertexIndex = -1;
+                for (int j = 0; j < MAXSIZE; j++)
+                {
+                    if (strcmp(dict[j].vertex, dict[currentVertexIndex].arrayList.edge[i]) == 0)
+                    {
+                        adjacentVertexIndex = j;
+                        break;
+                    }
+                }
+
+                // If the adjacent vertex is not visited, push it onto the stack
+                if (!visited[adjacentVertexIndex])
+                {
+                    push(stack, &top, adjacentVertexIndex);
+                    visited[adjacentVertexIndex] = true;
+                }
+            }
+        }
+    }
+
+    printf("\n");
+}
+
+int compareValues(STRING x, STRING y)
+{
+    int i = 0;
+    
+    while (x[i] != '\0' && y[i] != '\0')
+    {
+        if (x[i] < y[i])
+        {
+            return -1;
+        }
+        else if (x[i] > y[i])
+        {
+            return 1;
+        }
+        i++;
+    }
+    
+    if (x[i] == '\0' && y[i] != '\0')
+    {
+        return -1;
+    }
+    else if (x[i] != '\0' && y[i] == '\0')
+    {
+        return 1;
+    }
+    
+    return 0; // Both strings are equal
+}
+
+void enqueue(int *queue, int *front, int *rear, int val)
+{
+    (*rear)++;
+    queue[*rear] = val;
+}
+
+int dequeue(int *queue, int *front, int *rear)
+{
+    int val = queue[*front];
+    (*front)++;
+    return val;
+}
+
+void BFS(Dictionary *dict)
+{
+    // Create a queue to keep track of the vertices to be explored
+    int queue[MAXSIZE];
+    int front = 0; // Front of the queue (initially 0)
+    int rear = -1; // Rear of the queue (initially -1)
+
+    // Initialize an array to keep track of visited vertices
+    bool visited[MAXSIZE];
+    for (int i = 0; i < MAXSIZE; i++)
+    {
+        visited[i] = false;
+    }
+
+    // Find the starting vertex (startVal) to begin BFS
+    STRING startVal;
+    strcpy(startVal, EMPTYSTRING);
+
+    for (int i = 0; i < MAXSIZE - 1; i++)
+    {
+        if (strcmp(dict[i].vertex, EMPTYSTRING) != 0)
+        {
+            if (strcmp(dict[i + 1].vertex, EMPTYSTRING) != 0)
+            {
+                int smallVal = compareValues(dict[i].vertex, dict[i + 1].vertex);
+                if (smallVal == 0)
+                {
+                    if (strcmp(startVal, EMPTYSTRING) != 0)
+                    {
+                        int smallVal = compareValues(dict[i].vertex, startVal);
+                        if (smallVal == 0)
+                        {
+                            strcpy(startVal, dict[i].vertex);
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        strcpy(startVal, dict[i].vertex);
+                    }
+                }
+                else
+                {
+                    if (strcmp(startVal, EMPTYSTRING) != 0)
+                    {
+                        int smallVal = compareValues(dict[i + 1].vertex, startVal);
+                        if (smallVal == 0)
+                        {
+                            strcpy(startVal, dict[i + 1].vertex);
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        strcpy(startVal, dict[i + 1].vertex);
+                    }
+                }
+            }
+            else
+            {
+                strcpy(startVal, dict[i].vertex);
+            }
+        }
+    }
+
+    // Find the index of the starting vertex
+    int startValIndex = -1;
+    for (int i = 0; i < MAXSIZE; i++)
+    {
+        if (strcmp(dict[i].vertex, startVal) == 0)
+        {
+            startValIndex = i;
+            break;
+        }
+    }
+
+    // If the starting vertex is not found, return (error)
+    if (startValIndex == -1)
+    {
+        printf("Starting vertex not found: %s\n", startVal);
+        return;
+    }
+
+    // Enqueue the index of the starting vertex into the queue
+    enqueue(queue, &front, &rear, startValIndex);
+
+    // Mark the starting vertex as visited
+    visited[startValIndex] = true;
+
+    printf("BFS traversal starting from vertex %s: ", startVal);
+
+    // Start BFS traversal
+    while (front <= rear)
+    {
+        // Dequeue a vertex from the queue
+        int currentVertexIndex = dequeue(queue, &front, &rear);
+
+        // Process the current vertex (e.g., print its value)
+        printf("%s ", dict[currentVertexIndex].vertex);
+
+        // Explore all adjacent vertices of the current vertex
+        for (int i = 0; i < MAX; i++)
+        {
+            if (strcmp(dict[currentVertexIndex].arrayList.edge[i], EMPTYSTRING) != 0)
+            {
+                // Find the index of the adjacent vertex in the dictionary
+                int adjacentVertexIndex = -1;
+                for (int j = 0; j < MAXSIZE; j++)
+                {
+                    if (strcmp(dict[j].vertex, dict[currentVertexIndex].arrayList.edge[i]) == 0)
+                    {
+                        adjacentVertexIndex = j;
+                        break;
+                    }
+                }
+
+                // If the adjacent vertex is not visited, enqueue it into the queue
+                if (!visited[adjacentVertexIndex])
+                {
+                    enqueue(queue, &front, &rear, adjacentVertexIndex);
+                    visited[adjacentVertexIndex] = true;
+                }
+            }
+        }
+    }
+
+    printf("\n");
 }
