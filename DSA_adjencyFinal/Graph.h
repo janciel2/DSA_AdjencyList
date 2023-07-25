@@ -9,6 +9,7 @@
 #define EMPTYSTRING " "
 
 typedef char STRING[15];
+typedef int StackList;
 //MAIN ARRAY
 typedef struct
 {
@@ -33,6 +34,13 @@ void visualizeDictionary(Dictionary *dict);
 bool addEdge(Dictionary *dict, STRING vertex, STRING edge);
 bool deleteEdge(Dictionary *dict, STRING vertex, STRING edge);
 bool deleteVertex(Dictionary *dict, STRING vertex);
+void DFS(Dictionary *dict);
+int compareValues(STRING x, STRING y);
+void push(StackList *stack, int *top, int val);
+int pop(StackList *stack, int *top);
+void enqueue(int *queue, int *front, int *rear, int val);
+int dequeue(int *queue, int *front, int *rear);
+void BFS(Dictionary *dict);
 
 
 #endif
