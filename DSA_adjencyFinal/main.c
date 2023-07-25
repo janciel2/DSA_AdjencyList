@@ -23,5 +23,12 @@ int main(int argc, char *argv[])
 	added = addEdge(dict, "Philippines", "Thailand");
 	added = addEdge(dict, "Thailand", "Mexico");
 	displayDictionary(dict);
+	
+//	deleteEdge(dict, "Philippines", "Thailand");
+	displayDictionary(dict);
+	
+	deleteVertex(dict, "Philippines");
+	
+	displayDictionary(dict);
 	return 0;
 }
